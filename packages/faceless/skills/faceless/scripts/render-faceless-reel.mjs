@@ -237,6 +237,22 @@ for (const [offset, entry] of timeline.entries()) {
   currentVideo = nextVideo;
 }
 
+// Optional graphic callouts / visual overlays (e.g. repo cards, price comparisons, follow CTAs)
+if (options.overlays) {
+  const overlaysPath = resolve(options.overlays);
+  const overlays = JSON.parse(await readFile(overlaysPath, 'utf8'));
+  let nextInputIndex = 2 + timeline.length;
+  for (const [idx, ov] of overlays.entries()) {
+    const ovFile = resolve(ov.file);
+    await access(ovFile);
+    const currentInput = nextInputIndex++;
+    inputs.push('-loop', '1', '-framerate', '30', '-i', ovFile);
+    const nextVid = `v_ov_${idx}`;
+    filterSteps.push(`[${currentVideo}][${currentInput}:v]overlay=x=${ov.x}:y=${ov.y}:enable='gte(t,${ov.start})*lt(t,${ov.end})'[${nextVid}]`);
+    currentVideo = nextVid;
+  }
+}
+
 // Add ASS captions as the final visual filter step
 filterSteps.push(`[${currentVideo}]ass=filename='${assPath(assFile)}'[vout]`);
 

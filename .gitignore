@@ -9,4 +9,5 @@ video-templates/
 .env
 .env.local
 .agent/
+assets/
 
