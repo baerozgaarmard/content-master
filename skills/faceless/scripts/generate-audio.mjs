@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import {spawn} from 'node:child_process';
 import {access, mkdir, readFile, rename, rm, stat, writeFile} from 'node:fs/promises';
-import {join, resolve} from 'node:path';
+import {dirname, join, resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {ensureFfmpeg} from './ffmpeg.mjs';
-import {loadFishApiKey} from './fish-config.mjs';
 
-const FISH_TTS_URL = 'https://api.fish.audio/v1/tts';
-const FISH_MODEL = 's2';
+const scriptDirectory = dirname(fileURLToPath(import.meta.url));
+
 const PETER_VOICE_ID = 'e34b4e061b874623a08f41e5c4fecfb9';
 const STEWIE_VOICE_ID = 'fdffd3722cd040fcb3f95eec5a7f29f3';
 const RICK_VOICE_ID = 'd2e75a3e3fd6419893057c02a375a113';
@@ -70,33 +70,21 @@ async function isCompletedAudioFile(filePath) {
   }
 }
 
-async function generateLine({fishApiKey, line, filePath}) {
-  const response = await fetch(FISH_TTS_URL, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${fishApiKey}`,
-      'Content-Type': 'application/json',
-      model: FISH_MODEL,
-    },
-    body: JSON.stringify({
-      text: line.text,
-      reference_id: line.voiceId,
-      format: 'mp3',
-    }),
+async function generateLine({line, filePath}) {
+  const pythonScript = join(scriptDirectory, 'synthesize-line.py');
+  const pythonCmd = process.platform === 'win32' ? 'py' : 'python3';
+  const pythonArgs = process.platform === 'win32'
+    ? ['-3.14', pythonScript, '--text', line.text, '--voice', line.voiceId, '--output', filePath]
+    : [pythonScript, '--text', line.text, '--voice', line.voiceId, '--output', filePath];
+
+  return new Promise((resolvePromise, rejectPromise) => {
+    const child = spawn(pythonCmd, pythonArgs, {stdio: 'inherit'});
+    child.on('error', (err) => rejectPromise(new Error(`Speech generation failed: ${err.message}`)));
+    child.on('exit', (code) => {
+      if (code === 0) resolvePromise();
+      else rejectPromise(new Error(`VoiceStudio speech generation failed for line ${line.index} (exit ${code}).`));
+    });
   });
-
-  if (!response.ok) {
-    throw new Error(`Fish Audio could not generate line ${line.index} (HTTP ${response.status}).`);
-  }
-
-  const bytes = Buffer.from(await response.arrayBuffer());
-  if (bytes.length === 0) {
-    throw new Error(`Fish Audio returned empty audio for line ${line.index}.`);
-  }
-
-  const temporaryPath = `${filePath}.part`;
-  await writeFile(temporaryPath, bytes);
-  await rename(temporaryPath, filePath);
 }
 
 async function runFfmpeg(argumentsList) {
@@ -123,11 +111,6 @@ if (!/^[a-z0-9]+(?:-[a-z0-9]+){0,2}$/.test(options.topic)) {
   throw new Error('Topic must be a lowercase two- or three-word slug, for example claude-video.');
 }
 
-const fishApiKey = await loadFishApiKey();
-if (!fishApiKey) {
-  throw new Error('Fish Audio is not configured. Create a key at https://fish.audio/app/api-keys/ and run setup-fish.mjs first.');
-}
-
 const scriptPath = resolve(options.script);
 const outputDirectory = resolve(options.output);
 const audioDirectory = join(outputDirectory, 'audio', options.topic);
@@ -142,8 +125,8 @@ for (const line of lines) {
     console.log(`Keeping existing ${file}.`);
     continue;
   }
-  console.log(`Generating line ${line.index + 1} of ${lines.length}.`);
-  await generateLine({fishApiKey, line, filePath});
+  console.log(`Generating line ${line.index + 1} of ${lines.length} with VoiceStudio engine...`);
+  await generateLine({line, filePath});
   console.log(`Saved ${file}.`);
 }
 

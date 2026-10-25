@@ -10,7 +10,8 @@ const localExecutable = join(runtimeDirectory, 'node_modules', 'ffmpeg-static', 
 
 function run(executable, argumentsList, stdio = 'ignore') {
   return new Promise((resolve) => {
-    const child = spawn(executable, argumentsList, {stdio});
+    const useShell = process.platform === 'win32' && /\.cmd$/i.test(executable);
+    const child = spawn(executable, argumentsList, {stdio, shell: useShell});
     child.on('error', () => resolve(false));
     child.on('exit', (code) => resolve(code === 0));
   });

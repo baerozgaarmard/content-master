@@ -11,7 +11,7 @@ Maintained by [Bearozgaarmard](https://github.com/baerozgaarmard).
 | Package | Role | Description |
 |---|---|---|
 | [**`flick`**](packages/flick) | **Motion Director** | Turns videos, links, or transcripts into scene-by-scene animations in Remotion Studio. |
-| [**`faceless`**](packages/faceless) | **Dialogue Reels** | Generates Peter & Stewie or Rick & Morty dialogue reels with Fish Audio voices and Minecraft parkour backgrounds. |
+| [**`faceless`**](packages/faceless) | **Dialogue Reels** | Generates Peter & Stewie or Rick & Morty dialogue reels with VoiceStudio / free local voice synthesis and Minecraft parkour backgrounds. |
 | [**`mcp`**](packages/mcp) | **Agent Connector** | Connects Claude Code, Codex, and Antigravity agents to video analytics, outlier hooks, and transcript tools. |
 
 ---
@@ -102,7 +102,7 @@ npm run check
 
 ## Search Topics
 
-`ai-video-generator` • `remotion` • `youtube-automation` • `faceless-channel` • `faceless-reels` • `shorts-generator` • `text-to-video` • `whisper` • `claude-code` • `mcp-server` • `bearozgaarmard`
+`ai-video-generator` • `remotion` • `youtube-automation` • `faceless-channel` • `faceless-reels` • `shorts-generator` • `text-to-video` • `whisper` • `voicestudio` • `voice-cloning` • `elevenlabs-alternative` • `claude-code` • `mcp-server` • `bearozgaarmard`
 
 ---
 
