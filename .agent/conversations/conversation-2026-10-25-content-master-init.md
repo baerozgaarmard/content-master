@@ -83,3 +83,12 @@ The user requested cloning the 3 open-source repositories from Creatorberry (`fl
   2. `sleep-schedule-paradox`: 8 character lines, combined `full-dialogue.mp3` (47.32s).
   3. `quantum-block-jump`: 8 character lines, combined `full-dialogue.mp3` (43.68s).
 - **Pushed to GitHub**: Synchronized scripts and README with `origin/main`.
+
+
+---
+
+## 8. Removal of MCP & Authentic Voice Sourcing
+- **Removed MCP Package**: Completely deleted `packages/mcp`, updated `package.json`, `README.md`, and removed `mcp-server` GitHub topic.
+- **Downloaded Authentic Rick & Morty Samples**: Fetched isolated, high-clarity 24kHz reference voice samples from official Adult Swim dialogue (`voices/rick_reference.wav` and `voices/morty_reference.wav`).
+- **VoiceStudio Reference Integration**: Configured `synthesize-line.py` to route zero-shot voice cloning with reference audio to VoiceStudio.
+- **Regenerated 3 Demo Shorts Audio**: Re-rendered all dialogue lines and master audio files for `brainrot-simulation`, `sleep-schedule-paradox`, and `quantum-block-jump`.
