@@ -1,0 +1,8 @@
+{
+  "name": "flick",
+  "description": "Turn a video, transcript, or script into a reviewable Remotion animation.",
+  "owner": {"name": "Bearozgaarmard", "url": "https://github.com/baerozgaarmard/content-master/"},
+  "plugins": [
+    {"name": "flick", "source": "./", "description": "Create original motion animation with Remotion."}
+  ]
+}

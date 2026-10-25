@@ -1,0 +1,40 @@
+{
+  "name": "content-master-mcp",
+  "version": "0.1.0",
+  "description": "Install and manage the Content Master MCP connection for AI coding clients.",
+  "license": "MIT",
+  "author": "Bearozgaarmard",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baerozgaarmard/content-master.git"
+  },
+  "bugs": {
+    "url": "https://github.com/baerozgaarmard/content-master/issues"
+  },
+  "homepage": "https://github.com/baerozgaarmard/content-master#readme",
+  "type": "module",
+  "bin": {
+    "content-master": "./bin/content-master.js",
+    "content-master-mcp": "./bin/content-master.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "docs",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check bin/content-master.js && node --check src/cli.js && node --check src/system-runner.js"
+  },
+  "keywords": [
+    "content-master",
+    "bearozgaarmard",
+    "mcp",
+    "codex",
+    "claude-code"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "faceless",
+  "description": "Turn a supplied script into a two-character faceless reel with local Fish Audio and an optional Minecraft-background video.",
+  "author": {"name": "Bearozgaarmard"},
+  "license": "MIT",
+  "homepage": "https://github.com/baerozgaarmard/content-master/",
+  "keywords": ["faceless", "reels", "dialogue", "fish-audio", "minecraft", "content-master", "skill"]
+}

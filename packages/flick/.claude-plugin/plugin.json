@@ -1,0 +1,9 @@
+{
+  "name": "flick",
+  "description": "Turn a video, transcript, or script into a reviewable Remotion animation.",
+  "author": {"name": "Bearozgaarmard"},
+  "license": "MIT",
+  "homepage": "https://github.com/baerozgaarmard/content-master/",
+  "repository": "https://github.com/baerozgaarmard/content-master",
+  "keywords": ["remotion", "animation", "video", "skill"]
+}
