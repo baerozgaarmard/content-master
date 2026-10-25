@@ -8,3 +8,5 @@ faceless-output*/
 video-templates/
 .env
 .env.local
+.agent/
+
