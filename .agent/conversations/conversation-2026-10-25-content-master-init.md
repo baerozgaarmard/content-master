@@ -92,3 +92,15 @@ The user requested cloning the 3 open-source repositories from Creatorberry (`fl
 - **Downloaded Authentic Rick & Morty Samples**: Fetched isolated, high-clarity 24kHz reference voice samples from official Adult Swim dialogue (`voices/rick_reference.wav` and `voices/morty_reference.wav`).
 - **VoiceStudio Reference Integration**: Configured `synthesize-line.py` to route zero-shot voice cloning with reference audio to VoiceStudio.
 - **Regenerated 3 Demo Shorts Audio**: Re-rendered all dialogue lines and master audio files for `brainrot-simulation`, `sleep-schedule-paradox`, and `quantum-block-jump`.
+
+
+---
+
+## 9. Video Inspection, Reference Audio Extraction & Watch-Skill Integration
+- **Watched Desktop Video**: Inspected `WhatsApp Video 2026-10-25 at 7.47.16 PM.mp4` directly using native video perception. Revealed an authentic Creatorberry Peter & Stewie reel discussing video automation with Minecraft parkour footage.
+- **Extracted Reference Audio**:
+  - `voices/peter_reference.wav`: Isolated Peter Griffin clean voice (3.5s at 24kHz mono).
+  - `voices/stewie_reference.wav`: Isolated Stewie Griffin clean voice (5.0s at 24kHz mono).
+  - Complements the existing `rick_reference.wav` and `morty_reference.wav` samples.
+- **Integrated Watch-Skill**: Installed `watch-skill` and documented compatibility in `content-master` for video evidence, OCR, and scene extraction.
+- **Pushed to GitHub**: Added reference audio files, updated `synthesize-line.py`, and updated README.

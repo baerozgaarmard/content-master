@@ -73,9 +73,15 @@ content-master/
 
 ---
 
+## Video Understanding & Ingestion
+
+Content Master integrates with [**watch-skill**](https://github.com/oxbshw/watch-skill) to give agents eyes and ears — inspecting raw videos, extracting clean dialogue cues, and generating timestamped scene evidence for animation and reel generation.
+
+---
+
 ## Search Topics
 
-`ai-video-generator` • `remotion` • `youtube-automation` • `faceless-channel` • `faceless-reels` • `shorts-generator` • `text-to-video` • `whisper` • `voicestudio` • `voice-cloning` • `elevenlabs-alternative` • `bearozgaarmard`
+`ai-video-generator` • `remotion` • `youtube-automation` • `faceless-channel` • `faceless-reels` • `shorts-generator` • `text-to-video` • `whisper` • `voicestudio` • `voice-cloning` • `watch-skill` • `elevenlabs-alternative` • `bearozgaarmard`
 
 ---
 
