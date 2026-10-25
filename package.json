@@ -1,7 +1,7 @@
 {
   "name": "content-master",
   "version": "1.0.0",
-  "description": "Open-source AI content creation suite by Bearozgaarmard — Remotion scene animations, faceless character reels, and agent video tools.",
+  "description": "Open-source AI content creation suite by Bearozgaarmard — Remotion scene animations, faceless character reels, and automated video workflows.",
   "author": "Bearozgaarmard (https://github.com/baerozgaarmard)",
   "license": "MIT",
   "homepage": "https://github.com/baerozgaarmard/content-master#readme",
@@ -13,18 +13,16 @@
     "url": "https://github.com/baerozgaarmard/content-master/issues"
   },
   "workspaces": [
-    "packages/*"
+    "packages/flick",
+    "packages/faceless"
   ],
-  "scripts": {
-    "test": "npm --prefix packages/mcp test",
-    "check": "npm --prefix packages/mcp run check"
-  },
   "keywords": [
     "content-master",
     "flick",
     "faceless",
     "remotion",
-    "mcp",
+    "voicestudio",
+    "voice-cloning",
     "video-generation",
     "ai-agent",
     "bearozgaarmard"

@@ -11,8 +11,7 @@ Maintained by [Bearozgaarmard](https://github.com/baerozgaarmard).
 | Package | Role | Description |
 |---|---|---|
 | [**`flick`**](packages/flick) | **Motion Director** | Turns videos, links, or transcripts into scene-by-scene animations in Remotion Studio. |
-| [**`faceless`**](packages/faceless) | **Dialogue Reels** | Generates Peter & Stewie or Rick & Morty dialogue reels with VoiceStudio / free local voice synthesis and Minecraft parkour backgrounds. |
-| [**`mcp`**](packages/mcp) | **Agent Connector** | Connects Claude Code, Codex, and Antigravity agents to video analytics, outlier hooks, and transcript tools. |
+| [**`faceless`**](packages/faceless) | **Dialogue Reels** | Generates Peter & Stewie or Rick & Morty dialogue reels with VoiceStudio local voice cloning and Minecraft parkour backgrounds. |
 
 ---
 
@@ -28,7 +27,7 @@ Turn a transcript or script into timed, editable scene animations with audio-mat
 
 ![Faceless reel generator](assets/faceless.gif)
 
-Split-screen character dialogue reels with voice generation, reactive speaker animations, and centered highlight captions.
+Split-screen character dialogue reels with local voice cloning, reactive speaker animations, and centered highlight captions.
 
 ---
 
@@ -55,16 +54,6 @@ npx skills add baerozgaarmard/content-master --skill faceless --global --yes
 /plugin install faceless@content-master
 ```
 
-### Content Master MCP
-
-```bash
-# Claude Code
-npx --yes github:baerozgaarmard/content-master install --client claude
-
-# Codex
-npx --yes github:baerozgaarmard/content-master install --client codex
-```
-
 ---
 
 ## Monorepo Structure
@@ -73,8 +62,7 @@ npx --yes github:baerozgaarmard/content-master install --client codex
 content-master/
 ├── packages/
 │   ├── flick/       # Remotion motion director, sound effects & templates
-│   ├── faceless/    # Character dialogue engine, sprites & compositor
-│   └── mcp/         # MCP server connector and CLI
+│   └── faceless/    # Character dialogue engine, voice cloning & compositor
 ├── skills/          # Root skill discovery for npx skills
 │   ├── flick/
 │   └── faceless/
@@ -85,24 +73,9 @@ content-master/
 
 ---
 
-## Local Development
-
-```bash
-git clone https://github.com/baerozgaarmard/content-master.git
-cd content-master
-
-# Run tests
-npm test
-
-# Check syntax
-npm run check
-```
-
----
-
 ## Search Topics
 
-`ai-video-generator` • `remotion` • `youtube-automation` • `faceless-channel` • `faceless-reels` • `shorts-generator` • `text-to-video` • `whisper` • `voicestudio` • `voice-cloning` • `elevenlabs-alternative` • `claude-code` • `mcp-server` • `bearozgaarmard`
+`ai-video-generator` • `remotion` • `youtube-automation` • `faceless-channel` • `faceless-reels` • `shorts-generator` • `text-to-video` • `whisper` • `voicestudio` • `voice-cloning` • `elevenlabs-alternative` • `bearozgaarmard`
 
 ---
 
