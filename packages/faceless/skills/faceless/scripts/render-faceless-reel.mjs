@@ -133,11 +133,17 @@ if (!Array.isArray(script) || !Array.isArray(manifest.lines) || script.length !=
   throw new Error('The dialogue JSON and audio manifest must contain the same number of lines.');
 }
 
-const templates = (await readdir(templateDirectory, {withFileTypes: true}))
-  .filter((entry) => entry.isFile() && /\.(mp4|mov|mkv|webm)$/i.test(entry.name))
-  .map((entry) => join(templateDirectory, entry.name));
-if (templates.length === 0) throw new Error(`No video templates found in ${templateDirectory}.`);
-const templateVideo = templates[Math.floor(Math.random() * templates.length)];
+let templateVideo;
+if (options.template) {
+  templateVideo = resolve(options.template);
+  await access(templateVideo);
+} else {
+  const templates = (await readdir(templateDirectory, {withFileTypes: true}))
+    .filter((entry) => entry.isFile() && /\.(mp4|mov|mkv|webm)$/i.test(entry.name))
+    .map((entry) => join(templateDirectory, entry.name));
+  if (templates.length === 0) throw new Error(`No video templates found in ${templateDirectory}.`);
+  templateVideo = templates[Math.floor(Math.random() * templates.length)];
+}
 
 const executable = await ensureFfmpeg();
 const totalDuration = await getDuration(executable, fullAudio);
