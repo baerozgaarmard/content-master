@@ -126,6 +126,25 @@ async def generate_speech(text: str, voice_id: str, output_path: str):
         rate=char_info["rate"]
     )
     await communicate.save(output_path)
+
+    # Add a natural conversational pause (180ms) to the tail of each line for organic human turn-taking
+    try:
+        import subprocess
+        ffmpeg_bin = os.path.join(os.path.dirname(SCRIPT_DIR), ".runtime", "node_modules", "ffmpeg-static", "ffmpeg.exe")
+        if not os.path.exists(ffmpeg_bin):
+            ffmpeg_bin = "ffmpeg"
+        tmp_pad = output_path + ".pad.mp3"
+        subprocess.run([
+            ffmpeg_bin, "-y", "-i", output_path,
+            "-af", "apad=pad_dur=0.18",
+            "-c:a", "libmp3lame", "-b:a", "192k",
+            tmp_pad
+        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+        if os.path.exists(tmp_pad) and os.path.getsize(tmp_pad) > 0:
+            os.replace(tmp_pad, output_path)
+    except Exception:
+        pass
+
     ref_note = f" (Ref: {os.path.basename(char_info.get('reference_wav', ''))})" if char_info.get('reference_wav') else ""
     print(f"[Speech Engine] Generated {char_info['speaker']}{ref_note} -> {os.path.basename(output_path)}")
 
