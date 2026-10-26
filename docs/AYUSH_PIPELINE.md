@@ -22,7 +22,11 @@
 - **No Annoying Name Tags**: Automatically strips `PETER:` and `STEWIE:` prefixes so the screen stays clean, bold, and focused.
 
 ### 3. Genuine Real-Browser Overlays & 60 FPS HD Compositing
-- **100% Real Screenshots**: Uses headless browser automation (Edge/Chrome) to capture genuine, unedited GitHub repository views—capturing real star counts, verified commit history, README benchmarks, and real code files without artificial mockups.
+- **100% Real Screenshots (Zero Hidden Info Standard)**: Uses headless browser automation (Edge/Chrome) to capture genuine, unedited GitHub repository views. **Never hide, crop out, blur, or obscure any repository metadata**. Always maintain 100% visibility of:
+  - Repository owner & name (e.g. `DietrichGebert/ponytail`)
+  - Real star counts, watch counters, and forks
+  - Verified commit history, branch info, and contributors
+  - Full uncropped README sections and real code snippets
 - **Gameplay**: 1080×1920 60 FPS smooth parkour background (`minecraft_hd_new.mp4`).
 - **Typography**: 96px Arial Black, 12px deep black outline, 5px drop shadow.
   - Peter: High-contrast bright Yellow fill (`&H0033FFFF`).
