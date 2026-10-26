@@ -11,4 +11,12 @@ video-templates/
 .agent/
 .codebase-memory/
 assets/
+.ai_env/
+**/models/
+**/voices/
+*.wav
+sample_*.mp3
+test*.mp3
+generate_hf_rvc_samples.py
+
 
