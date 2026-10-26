@@ -72,42 +72,42 @@ CHARACTER_MAP = {
         "pitch": "+12Hz",
         "rate": "+10%"
     },
-    # Peter Griffin (Seth MacFarlane - Family Guy)
+    # Peter Griffin (Seth MacFarlane - Family Guy - Heavy Natural Delik 81MB Index Model)
     "e34b4e061b874623a08f41e5c4fecfb9": {
         "speaker": "Peter Griffin",
         "reference_wav": os.path.join(VOICES_DIR, "peter_reference.wav"),
-        "model_path": resolve_model_path(os.path.join("peter_griffin", "peter.pth")),
-        "index_path": resolve_model_path(os.path.join("peter_griffin", "peter.index")),
+        "model_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.pth")),
+        "index_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.index")),
         "fallback_voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+3%",
+        "pitch": "+1Hz",
+        "rate": "+2%",
         "f0up_key": 0,
-        "index_rate": 0.9,
+        "index_rate": 0.92,
         "f0method": "harvest"
     },
     "peter": {
         "speaker": "Peter Griffin",
         "reference_wav": os.path.join(VOICES_DIR, "peter_reference.wav"),
-        "model_path": resolve_model_path(os.path.join("peter_griffin", "peter.pth")),
-        "index_path": resolve_model_path(os.path.join("peter_griffin", "peter.index")),
+        "model_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.pth")),
+        "index_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.index")),
         "fallback_voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+3%",
+        "pitch": "+1Hz",
+        "rate": "+2%",
         "f0up_key": 0,
-        "index_rate": 0.9,
+        "index_rate": 0.92,
         "f0method": "harvest"
     },
     "peter-griffin": {
         "speaker": "Peter Griffin",
         "reference_wav": os.path.join(VOICES_DIR, "peter_reference.wav"),
-        "model_path": resolve_model_path(os.path.join("peter_griffin", "peter.pth")),
-        "index_path": resolve_model_path(os.path.join("peter_griffin", "peter.index")),
-        "fallback_voice": "en-US-GuyNeural",
-        "pitch": "-5Hz",
-        "rate": "-5%",
+        "model_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.pth")),
+        "index_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.index")),
+        "fallback_voice": "en-US-ChristopherNeural",
+        "pitch": "+1Hz",
+        "rate": "+2%",
         "f0up_key": 0,
-        "index_rate": 0.8,
-        "f0method": "pm"
+        "index_rate": 0.92,
+        "f0method": "harvest"
     },
     # Stewie Griffin (Seth MacFarlane - Family Guy)
     "fdffd3722cd040fcb3f95eec5a7f29f3": {

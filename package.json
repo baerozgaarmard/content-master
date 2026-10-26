@@ -12,6 +12,13 @@
   "bugs": {
     "url": "https://github.com/baerozgaarmard/content-master/issues"
   },
+  "scripts": {
+    "ayush-pipeline": "node scripts/ayush-pipeline.mjs",
+    "render-reel": "node skills/faceless/scripts/render-faceless-reel.mjs",
+    "generate-audio": "node skills/faceless/scripts/generate-audio.mjs",
+    "align-dialogue": "python skills/faceless/scripts/align-dialogue.py",
+    "generate-cover": "python scripts/generate-cover.py"
+  },
   "workspaces": [
     "packages/flick",
     "packages/faceless"
