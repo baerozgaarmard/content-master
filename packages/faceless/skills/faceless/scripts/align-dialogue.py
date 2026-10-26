@@ -3,6 +3,7 @@ import sys
 import re
 import json
 import io
+import argparse
 import subprocess
 import soundfile as sf
 import numpy as np
@@ -58,77 +59,115 @@ def words_from(text):
     return re.findall(r"[A-Za-z0-9]+(?:[''\-][A-Za-z0-9]+)*", text)
 
 def stress_word(words):
-    if not words:
-        return ""
-    return max(words, key=len)
+    stop_words = {'a', 'an', 'and', 'are', 'as', 'at', 'be', 'but', 'by', 'for', 'from', 'he', 'her', 'his', 'i', 'if', 'in', 'is', 'it', 'its', 'of', 'on', 'or', 'our', 'so', 'that', 'the', 'their', 'then', 'there', 'they', 'this', 'to', 'was', 'we', 'what', 'when', 'with', 'you', 'your'}
+    for w in reversed(words):
+        if w.lower() not in stop_words and len(w) > 2:
+            return w
+    return words[-1] if words else ""
 
-def group_words(words, max_size=3):
+def group_clause_words(words):
+    if len(words) <= 3:
+        return [words]
     groups = []
-    for i in range(0, len(words), max_size):
-        groups.append(words[i:i+max_size])
+    i = 0
+    while i < len(words):
+        rem = len(words) - i
+        if rem == 4:
+            groups.append(words[i:i+2])
+            groups.append(words[i+2:i+4])
+            break
+        elif rem == 5:
+            groups.append(words[i:i+3])
+            groups.append(words[i+3:i+5])
+            break
+        elif rem >= 3:
+            groups.append(words[i:i+3])
+            i += 3
+        else:
+            groups.append(words[i:])
+            break
     return groups
 
-def align_line_chunks(line_index, line_text, audio_path, base_time):
+def align_line_chunks(line_index, text, audio_path, base_time):
     dur, bursts = get_audio_bursts(audio_path)
-    clean_text = re.sub(r'^\s*\([^)]*\)\s*', '', line_text).strip()
-    clauses = split_clauses(clean_text)
+    clauses = split_clauses(text)
+    if not bursts:
+        bursts = [(0.0, dur)]
+        
+    num_clauses = len(clauses)
+    num_bursts = len(bursts)
     
+    # Map clauses to bursts proportionally
+    clause_bursts = []
+    if num_clauses <= num_bursts:
+        indices = np.linspace(0, num_bursts - 1, num_clauses).round().astype(int)
+        for idx, cl in zip(indices, clauses):
+            clause_bursts.append((cl, bursts[idx][0], bursts[idx][1]))
+    else:
+        # Fewer bursts than clauses -> subdivide bursts
+        total_chars = sum(len(c) for c in clauses)
+        b_idx = 0
+        for cl in clauses:
+            b_s, b_e = bursts[min(b_idx, num_bursts - 1)]
+            clause_bursts.append((cl, b_s, b_e))
+            if b_idx < num_bursts - 1:
+                b_idx += 1
+                
     chunks = []
-    
-    if len(clauses) == len(bursts) and len(clauses) > 0:
-        for clause, (b_start, b_end) in zip(clauses, bursts):
-            words = words_from(clause)
-            if not words:
-                continue
-            groups = group_words(words, max_size=3)
-            b_dur = b_end - b_start
-            total_len = sum(len(w) for g in groups for w in g)
-            g_start = base_time + b_start
-            for g in groups:
-                g_weight = sum(len(w) for w in g) / max(1, total_len)
-                g_dur = b_dur * g_weight
-                g_end = g_start + g_dur
+    for cl_text, c_start, c_end in clause_bursts:
+        cl_words = words_from(cl_text)
+        if not cl_words:
+            continue
+        c_dur = max(0.2, c_end - c_start)
+        groups = group_clause_words(cl_words)
+        total_chars = sum(sum(len(w) for w in g) for g in groups)
+        
+        g_start = c_start
+        for g in groups:
+            g_weight = sum(len(w) for w in g) / max(1, total_chars)
+            g_end = g_start + c_dur * g_weight
+            
+            clean_g_words = [re.sub(r'^\(+|\)+$', '', w) for w in g]
+            clean_g_words = [w for w in clean_g_words if w]
+            if clean_g_words:
                 chunks.append({
                     "lineIndex": line_index,
-                    "start": round(g_start, 3),
-                    "end": round(g_end, 3),
-                    "words": [w.upper() for w in g],
-                    "stress": stress_word(g).upper()
+                    "start": round(base_time + g_start, 3),
+                    "end": round(base_time + g_end, 3),
+                    "words": clean_g_words,
+                    "stressWord": stress_word(clean_g_words)
                 })
-                g_start = g_end
-    else:
-        # Fallback to speech burst boundaries without stage directions
-        speech_start = bursts[0][0] if bursts else 0.15
-        speech_end = bursts[-1][1] if bursts else dur - 0.2
-        active_dur = max(0.5, speech_end - speech_start)
-        
-        words = words_from(clean_text)
-        groups = group_words(words, max_size=3)
-        total_len = sum(len(w) for g in groups for w in g)
-        g_start = base_time + speech_start
-        for g in groups:
-            g_weight = sum(len(w) for w in g) / max(1, total_len)
-            g_dur = active_dur * g_weight
-            g_end = g_start + g_dur
-            chunks.append({
-                "lineIndex": line_index,
-                "start": round(g_start, 3),
-                "end": round(g_end, 3),
-                "words": [w.upper() for w in g],
-                "stress": stress_word(g).upper()
-            })
             g_start = g_end
             
     return dur, chunks
 
 def main():
-    root = sys.argv[1] if len(sys.argv) > 1 else "."
-    topic = sys.argv[2] if len(sys.argv) > 2 else "prompts-chat"
-    
-    dialogue_path = os.path.join(root, "faceless-output", "scripts", topic, "dialogue.json")
+    parser = argparse.ArgumentParser(description="Acoustic Dialogue Alignment")
+    parser.add_argument("pos_root", nargs="?", default=None, help="Positional root directory")
+    parser.add_argument("pos_topic", nargs="?", default=None, help="Positional topic name")
+    parser.add_argument("--root", default=".", help="Root directory")
+    parser.add_argument("--topic", default="prompts-chat", help="Topic slug")
+    parser.add_argument("--dialogue", default=None, help="Path to dialogue JSON")
+    parser.add_argument("--audio", default=None, help="Path to master audio file or audio dir")
+    parser.add_argument("--output", default=None, help="Path to output caption-chunks.json")
+    args = parser.parse_args()
+
+    root = args.pos_root or args.root
+    topic = args.pos_topic or args.topic
+
+    if args.dialogue:
+        dialogue_path = args.dialogue
+    else:
+        dialogue_path = os.path.join(root, "faceless-output", "scripts", topic, "dialogue.json")
+
     audio_dir = os.path.join(root, "faceless-output", "audio", topic)
-    out_dir = os.path.join(root, "faceless-output", "video", topic)
-    os.makedirs(out_dir, exist_ok=True)
+    if args.output:
+        out_file = args.output
+        os.makedirs(os.path.dirname(os.path.abspath(out_file)), exist_ok=True)
+    else:
+        out_dir = os.path.join(root, "faceless-output", "video", topic)
+        os.makedirs(out_dir, exist_ok=True)
+        out_file = os.path.join(out_dir, "caption-chunks.json")
     
     with open(dialogue_path, "r", encoding="utf-8") as f:
         dialogue = json.load(f)
@@ -143,7 +182,6 @@ def main():
         all_chunks.extend(chunks)
         current_time += dur
         
-    out_file = os.path.join(out_dir, "caption-chunks.json")
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(all_chunks, f, indent=2)
         
