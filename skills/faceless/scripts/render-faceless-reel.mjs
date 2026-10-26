@@ -209,8 +209,7 @@ const assLines = [
   ...chunks.map((chunk) => {
     const isPeter = chunk.lineIndex % 2 === 0;
     const styleName = isPeter ? 'PeterCaption' : 'StewieCaption';
-    const speakerTag = isPeter ? '{\\c&H00D7FF&}PETER: {\\c&HFFFFFF&}' : '{\\c&HFFFF00&}STEWIE: {\\c&HFFFFFF&}';
-    return `Dialogue: 0,${toTimestamp(chunk.start)},${toTimestamp(chunk.end)},${styleName},,0,0,0,,{\\an5\\pos(540,960)\\fad(50,50)\\fscx90\\fscy90\\t(0,90,\\fscx100\\fscy100)}${speakerTag}${captionText(chunk.words, isPeter)}`;
+    return `Dialogue: 0,${toTimestamp(chunk.start)},${toTimestamp(chunk.end)},${styleName},,0,0,0,,{\\an5\\pos(540,960)\\fad(50,50)\\fscx90\\fscy90\\t(0,90,\\fscx100\\fscy100)}${captionText(chunk.words, isPeter)}`;
   }),
 ];
 await writeFile(assFile, `${assLines.join('\n')}\n`, 'utf8');
