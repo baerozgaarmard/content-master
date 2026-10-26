@@ -80,7 +80,7 @@ CHARACTER_MAP = {
         "index_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.index")),
         "fallback_voice": "en-US-ChristopherNeural",
         "pitch": "+1Hz",
-        "rate": "+2%",
+        "rate": "+15%",
         "f0up_key": 0,
         "index_rate": 0.92,
         "f0method": "harvest"
@@ -92,7 +92,7 @@ CHARACTER_MAP = {
         "index_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.index")),
         "fallback_voice": "en-US-ChristopherNeural",
         "pitch": "+1Hz",
-        "rate": "+2%",
+        "rate": "+15%",
         "f0up_key": 0,
         "index_rate": 0.92,
         "f0method": "harvest"
@@ -104,7 +104,7 @@ CHARACTER_MAP = {
         "index_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.index")),
         "fallback_voice": "en-US-ChristopherNeural",
         "pitch": "+1Hz",
-        "rate": "+2%",
+        "rate": "+15%",
         "f0up_key": 0,
         "index_rate": 0.92,
         "f0method": "harvest"
@@ -117,7 +117,7 @@ CHARACTER_MAP = {
         "index_path": resolve_model_path(os.path.join("stewie_griffin", "added_IVF425_Flat_nprobe_1_Stewie_v2.index")),
         "fallback_voice": "en-GB-RyanNeural",
         "pitch": "+12Hz",
-        "rate": "+10%",
+        "rate": "+16%",
         "f0up_key": 0,
         "index_rate": 0.8,
         "f0method": "pm"
@@ -129,7 +129,7 @@ CHARACTER_MAP = {
         "index_path": resolve_model_path(os.path.join("stewie_griffin", "added_IVF425_Flat_nprobe_1_Stewie_v2.index")),
         "fallback_voice": "en-GB-RyanNeural",
         "pitch": "+12Hz",
-        "rate": "+10%",
+        "rate": "+16%",
         "f0up_key": 0,
         "index_rate": 0.8,
         "f0method": "pm"

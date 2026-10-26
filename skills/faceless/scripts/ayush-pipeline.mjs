@@ -172,8 +172,9 @@ async function main() {
     if (options.overlays && existsSync(options.overlays)) {
       try {
         const overlayData = JSON.parse(await readFile(options.overlays, 'utf8'));
-        if (overlayData.overlays && overlayData.overlays.length > 0) {
-          coverArgs.push('--screenshot', overlayData.overlays[0].image);
+        const firstOverlay = Array.isArray(overlayData) ? overlayData[0] : (overlayData.overlays && overlayData.overlays[0]);
+        if (firstOverlay && (firstOverlay.file || firstOverlay.image)) {
+          coverArgs.push('--screenshot', firstOverlay.file || firstOverlay.image);
         }
       } catch {
         // use default screenshot

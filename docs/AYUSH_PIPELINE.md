@@ -6,12 +6,13 @@
 
 ## 🌟 Key Architecture & Breakthroughs
 
-### 1. Ultra-Natural Voice Synthesis (Hugging Face RVC v2 + PyWorld Harvest)
+### 1. Ultra-Natural High-Tempo Voice Synthesis (Hugging Face RVC v2 + PyWorld Harvest)
 - **Peter Griffin Voice**: Powered by `Delik/Peter_Griffin_RVCv2` from Hugging Face (`peter_delik.pth` 52.67 MB + `peter_delik.index` **81.57 MB** high-fidelity vocal dataset).
-  - Base Voice: `en-US-ChristopherNeural` (`pitch="+1Hz"`, `rate="+2%"`).
+  - Base Voice: `en-US-ChristopherNeural` (`pitch="+1Hz"`, `rate="+15%"` high-energy animated cadence).
   - Pitch Extraction Engine: **PyWorld `Harvest`** (`f0method="harvest"`, `index_rate=0.92`, `protect=0.33`).
-  - *Result*: Deep chest resonance, rich vocal fry, and authentic comedic inflection of Seth MacFarlane—completely eliminating the robotic buzzing and tinny artifacts of older PM pitch models.
-- **Stewie Griffin Voice**: Powered by RVC v2 (`Stewie.pth` + `added_IVF425_Flat_nprobe_1_Stewie_v2.index`) with British accent base (`en-GB-RyanNeural`).
+  - *Result*: Deep chest resonance, rich vocal fry, and fast comedic Seth MacFarlane inflection—completely eliminating sluggish delivery and robotic buzzing.
+- **Stewie Griffin Voice**: Powered by RVC v2 (`Stewie.pth` + `added_IVF425_Flat_nprobe_1_Stewie_v2.index`) with British accent base (`en-GB-RyanNeural`, `rate="+16%"`).
+- **Conversational Pace**: Snappy back-and-forth banter targeted for 35–45s total runtime to maximize short-form viral retention.
 - **Resampling Uniformity**: Every spoken line is normalized to 44.1 kHz mono PCM (`-ar 44100 -ac 1`) before concatenation.
 
 ### 2. Acoustic Speech Burst Subtitle Alignment
@@ -20,21 +21,19 @@
 - **Zero Subtitle Drift**: Words never persist across silent pauses, breaths, or character transitions.
 - **No Annoying Name Tags**: Automatically strips `PETER:` and `STEWIE:` prefixes so the screen stays clean, bold, and focused.
 
-### 3. High-Impact 60 FPS HD Visual Compositing
+### 3. Genuine Real-Browser Overlays & 60 FPS HD Compositing
+- **100% Real Screenshots**: Uses headless browser automation (Edge/Chrome) to capture genuine, unedited GitHub repository views—capturing real star counts, verified commit history, README benchmarks, and real code files without artificial mockups.
 - **Gameplay**: 1080×1920 60 FPS smooth parkour background (`minecraft_hd_new.mp4`).
 - **Typography**: 96px Arial Black, 12px deep black outline, 5px drop shadow.
   - Peter: High-contrast bright Yellow fill (`&H0033FFFF`).
   - Stewie: High-contrast Cyan fill (`&H00FFFF00`).
-- **Authentic Overlays**: Seamlessly fades in genuine GitHub screenshots (`prompts_chat_overlays.json`) at precise timestamps with drop shadows and rounded corner frames.
 
-### 4. Viral 1080×1920 Cover Generation & SEO Bundle
-- Autonomous generation of 1080×1920 clickable covers (`generate_cover.py`) featuring:
-  - High-saturation dark gradient background.
-  - Project screenshot displayed inside an electric cyan glow card.
-  - Big bold curiosity-inducing headline.
-  - Character sticker cutouts with white outline and drop shadow.
-  - Viral badge (`★ 174,000 STARS ON GITHUB | 100% FREE`).
-- Automatic generation of SEO title and 4 viral hashtags (`#chatgpt #chatgptprompts #ai #github`).
+### 4. Clean Viral Cover Generation (No AI Slop Boxes)
+- High-CTR 1080×1920 cover generation featuring:
+  - Clean, bold, viral headline (`STOP LETTING AI WRITE BLOATED CODE!`).
+  - **Actual Real GitHub Repository Screenshot** as the prominent centerpiece.
+  - Character sticker cutouts (Peter & Stewie).
+  - **Zero AI Slop**: Strictly avoids cluttered synthetic pills, cheesy fake badges, and artificial gradient boxes.
 
 ---
 
