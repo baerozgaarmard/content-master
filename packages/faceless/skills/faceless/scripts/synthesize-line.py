@@ -323,9 +323,10 @@ async def try_rvc_conversion(speech_text: str, char_info: dict, output_path: str
         )
         rvc.infer_file(base_wav, rvc_out_wav)
 
-        # 4. Transcode to high quality 192k MP3
+        # 4. Transcode to high quality 192k MP3 normalized to 44.1kHz mono
         subprocess.run([
             ffmpeg_bin, "-y", "-i", rvc_out_wav,
+            "-ar", "44100", "-ac", "1",
             "-c:a", "libmp3lame", "-b:a", "192k",
             output_path
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
@@ -381,6 +382,7 @@ def pad_tail(output_path: str):
         subprocess.run([
             ffmpeg_bin, "-y", "-i", output_path,
             "-af", "apad=pad_dur=0.18",
+            "-ar", "44100", "-ac", "1",
             "-c:a", "libmp3lame", "-b:a", "192k",
             tmp_pad
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)

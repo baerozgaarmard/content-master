@@ -135,14 +135,22 @@ for (const file of audioFiles) {
   await access(join(audioDirectory, file));
 }
 
-const concatFile = join(audioDirectory, 'ffmpeg-concat.txt');
 const combinedAudio = join(audioDirectory, 'full-dialogue.mp3');
-await writeFile(concatFile, `${audioFiles.map((file) => toConcatEntry(join(audioDirectory, file))).join('\n')}\n`);
-try {
-  await runFfmpeg(['-y', '-f', 'concat', '-safe', '0', '-i', concatFile, '-c', 'copy', combinedAudio]);
-} finally {
-  await rm(concatFile, {force: true});
+const concatInputs = [];
+for (const file of audioFiles) {
+  concatInputs.push('-i', join(audioDirectory, file));
 }
+await runFfmpeg([
+  '-y',
+  ...concatInputs,
+  '-filter_complex', `concat=n=${audioFiles.length}:v=0:a=1[a]`,
+  '-map', '[a]',
+  '-c:a', 'libmp3lame',
+  '-b:a', '192k',
+  '-ar', '44100',
+  '-ac', '1',
+  combinedAudio,
+]);
 
 await writeFile(
   join(audioDirectory, 'audio-manifest.json'),
