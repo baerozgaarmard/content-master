@@ -134,7 +134,7 @@ await mkdir(audioDirectory, {recursive: true});
 for (const line of lines) {
   const file = `${String(line.index).padStart(3, '0')}.mp3`;
   const filePath = join(audioDirectory, file);
-  if (await isCompletedAudioFile(filePath)) {
+  if (options.force !== 'true' && await isCompletedAudioFile(filePath)) {
     console.log(`Keeping existing ${file}.`);
     continue;
   }

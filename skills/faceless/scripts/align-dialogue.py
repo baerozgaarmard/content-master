@@ -90,6 +90,34 @@ def group_clause_words(words):
 
 def align_line_chunks(line_index, text, audio_path, base_time):
     dur, bursts = get_audio_bursts(audio_path)
+    words_file = os.path.splitext(audio_path)[0] + ".words.json"
+    
+    if os.path.exists(words_file):
+        try:
+            with open(words_file, "r", encoding="utf-8") as f:
+                word_entries = json.load(f)
+            if word_entries:
+                groups = group_clause_words(word_entries)
+                chunks = []
+                for g in groups:
+                    clean_words = [re.sub(r'^[^\w]+|[^\w]+$', '', w["word"]) for w in g]
+                    clean_words = [w for w in clean_words if w]
+                    if not clean_words:
+                        continue
+                    g_start = g[0]["start"]
+                    g_end = max(g[-1]["end"], g_start + 0.28)
+                    chunks.append({
+                        "lineIndex": line_index,
+                        "start": round(base_time + g_start, 3),
+                        "end": round(base_time + g_end, 3),
+                        "words": clean_words,
+                        "stressWord": stress_word(clean_words)
+                    })
+                if chunks:
+                    return dur, chunks
+        except Exception as e:
+            print(f"Notice: words.json reading fallback: {e}")
+
     clauses = split_clauses(text)
     if not bursts:
         bursts = [(0.0, dur)]
@@ -160,7 +188,7 @@ def main():
     else:
         dialogue_path = os.path.join(root, "faceless-output", "scripts", topic, "dialogue.json")
 
-    audio_dir = os.path.join(root, "faceless-output", "audio", topic)
+    audio_dir = args.audio if args.audio else os.path.join(root, "faceless-output", "audio", topic)
     if args.output:
         out_file = args.output
         os.makedirs(os.path.dirname(os.path.abspath(out_file)), exist_ok=True)

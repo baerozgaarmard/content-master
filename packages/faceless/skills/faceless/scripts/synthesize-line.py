@@ -79,8 +79,8 @@ CHARACTER_MAP = {
         "model_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.pth")),
         "index_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.index")),
         "fallback_voice": "en-US-ChristopherNeural",
-        "pitch": "+1Hz",
-        "rate": "+15%",
+        "pitch": "+0Hz",
+        "rate": "+0%",
         "f0up_key": 0,
         "index_rate": 0.92,
         "f0method": "harvest"
@@ -91,8 +91,8 @@ CHARACTER_MAP = {
         "model_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.pth")),
         "index_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.index")),
         "fallback_voice": "en-US-ChristopherNeural",
-        "pitch": "+1Hz",
-        "rate": "+15%",
+        "pitch": "+0Hz",
+        "rate": "+0%",
         "f0up_key": 0,
         "index_rate": 0.92,
         "f0method": "harvest"
@@ -103,8 +103,8 @@ CHARACTER_MAP = {
         "model_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.pth")),
         "index_path": resolve_model_path(os.path.join("peter_griffin_v2", "peter_delik.index")),
         "fallback_voice": "en-US-ChristopherNeural",
-        "pitch": "+1Hz",
-        "rate": "+15%",
+        "pitch": "+0Hz",
+        "rate": "+0%",
         "f0up_key": 0,
         "index_rate": 0.92,
         "f0method": "harvest"
@@ -116,8 +116,8 @@ CHARACTER_MAP = {
         "model_path": resolve_model_path(os.path.join("stewie_griffin", "Stewie.pth")),
         "index_path": resolve_model_path(os.path.join("stewie_griffin", "added_IVF425_Flat_nprobe_1_Stewie_v2.index")),
         "fallback_voice": "en-GB-RyanNeural",
-        "pitch": "+12Hz",
-        "rate": "+16%",
+        "pitch": "+8Hz",
+        "rate": "+0%",
         "f0up_key": 0,
         "index_rate": 0.8,
         "f0method": "pm"
@@ -128,8 +128,8 @@ CHARACTER_MAP = {
         "model_path": resolve_model_path(os.path.join("stewie_griffin", "Stewie.pth")),
         "index_path": resolve_model_path(os.path.join("stewie_griffin", "added_IVF425_Flat_nprobe_1_Stewie_v2.index")),
         "fallback_voice": "en-GB-RyanNeural",
-        "pitch": "+12Hz",
-        "rate": "+16%",
+        "pitch": "+8Hz",
+        "rate": "+0%",
         "f0up_key": 0,
         "index_rate": 0.8,
         "f0method": "pm"
@@ -140,8 +140,8 @@ CHARACTER_MAP = {
         "model_path": resolve_model_path(os.path.join("stewie_griffin", "Stewie.pth")),
         "index_path": resolve_model_path(os.path.join("stewie_griffin", "added_IVF425_Flat_nprobe_1_Stewie_v2.index")),
         "fallback_voice": "en-GB-RyanNeural",
-        "pitch": "+12Hz",
-        "rate": "+10%",
+        "pitch": "+8Hz",
+        "rate": "+0%",
         "f0up_key": 0,
         "index_rate": 0.8,
         "f0method": "pm"
@@ -294,14 +294,31 @@ async def try_rvc_conversion(speech_text: str, char_info: dict, output_path: str
     rvc_out_wav = output_path + ".rvc.wav"
 
     try:
-        # 1. Synthesize base TTS audio
+        # 1. Synthesize base TTS audio and extract word boundaries
         communicate = edge_tts.Communicate(
             text=speech_text,
             voice=char_info.get("fallback_voice", "en-US-BrianNeural"),
             pitch=char_info.get("pitch", "+0Hz"),
-            rate=char_info.get("rate", "+0%")
+            rate=char_info.get("rate", "+0%"),
+            boundary="WordBoundary"
         )
-        await communicate.save(base_mp3)
+        audio_data = bytearray()
+        words = []
+        async for chunk in communicate.stream():
+            if chunk["type"] == "audio":
+                audio_data.extend(chunk["data"])
+            elif chunk["type"] == "WordBoundary":
+                words.append({
+                    "word": chunk["text"],
+                    "start": round(chunk["offset"] / 10000000.0, 3),
+                    "end": round((chunk["offset"] + chunk["duration"]) / 10000000.0, 3)
+                })
+        with open(base_mp3, "wb") as f:
+            f.write(audio_data)
+
+        words_path = os.path.splitext(output_path)[0] + ".words.json"
+        with open(words_path, "w", encoding="utf-8") as f:
+            json.dump(words, f, indent=2)
 
         # 2. Resample base TTS to 16kHz mono WAV for RVC
         subprocess.run([
@@ -366,9 +383,27 @@ async def generate_speech(text: str, voice_id: str, output_path: str):
         text=speech_text,
         voice=char_info["fallback_voice"],
         pitch=char_info["pitch"],
-        rate=char_info["rate"]
+        rate=char_info["rate"],
+        boundary="WordBoundary"
     )
-    await communicate.save(output_path)
+    audio_data = bytearray()
+    words = []
+    async for chunk in communicate.stream():
+        if chunk["type"] == "audio":
+            audio_data.extend(chunk["data"])
+        elif chunk["type"] == "WordBoundary":
+            words.append({
+                "word": chunk["text"],
+                "start": round(chunk["offset"] / 10000000.0, 3),
+                "end": round((chunk["offset"] + chunk["duration"]) / 10000000.0, 3)
+            })
+    with open(output_path, "wb") as f:
+        f.write(audio_data)
+
+    words_path = os.path.splitext(output_path)[0] + ".words.json"
+    with open(words_path, "w", encoding="utf-8") as f:
+        json.dump(words, f, indent=2)
+
     pad_tail(output_path)
 
     ref_note = f" (Ref: {os.path.basename(char_info.get('reference_wav', ''))})" if char_info.get('reference_wav') else ""

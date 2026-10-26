@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import {spawn} from 'node:child_process';
 import {access, mkdir, readdir, readFile, rename, rm, stat, writeFile} from 'node:fs/promises';
-import {dirname, join, resolve} from 'node:path';
+import {dirname, join, resolve, isAbsolute} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {ensureFfmpeg} from './ffmpeg.mjs';
 
@@ -97,7 +97,7 @@ function captionText(group, isPeter = true) {
   const stressColor = isPeter ? '{\\c&H00D7FF&}' : '{\\c&HFFFF00&}'; // Gold for Peter, Cyan for Stewie
   return group.map((word) => {
     const escaped = escapeAss(word.toUpperCase());
-    return word === stress ? `${stressColor}${escaped}{\\c&HFFFFFF&}` : escaped;
+    return word.toUpperCase() === stress.toUpperCase() ? `${stressColor}${escaped}{\\c&HFFFFFF&}` : escaped;
   }).join(' ');
 }
 
@@ -258,7 +258,7 @@ if (options.overlays) {
   const overlays = JSON.parse(await readFile(overlaysPath, 'utf8'));
   let nextInputIndex = 2 + timeline.length;
   for (const [idx, ov] of overlays.entries()) {
-    const ovFile = resolve(ov.file);
+    const ovFile = isAbsolute(ov.file) ? ov.file : resolve(dirname(overlaysPath), '..', '..', ov.file);
     await access(ovFile);
     const currentInput = nextInputIndex++;
     inputs.push('-loop', '1', '-framerate', '30', '-i', ovFile);

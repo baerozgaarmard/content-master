@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import {spawn} from 'node:child_process';
+import {existsSync} from 'node:fs';
 import {access, mkdir, readFile, rename, rm, stat, writeFile} from 'node:fs/promises';
 import {dirname, join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -11,10 +12,18 @@ const PETER_VOICE_ID = 'e34b4e061b874623a08f41e5c4fecfb9';
 const STEWIE_VOICE_ID = 'fdffd3722cd040fcb3f95eec5a7f29f3';
 const RICK_VOICE_ID = 'd2e75a3e3fd6419893057c02a375a113';
 const MORTY_VOICE_ID = '3d445d095ba04681bcba7177faedf55a';
-const ALLOWED_VOICE_IDS = new Set([PETER_VOICE_ID, STEWIE_VOICE_ID, RICK_VOICE_ID, MORTY_VOICE_ID]);
+const WALTER_VOICE_ID = 'walter';
+const ELON_VOICE_ID = 'elon';
+const ALLOWED_VOICE_IDS = new Set([
+  PETER_VOICE_ID, STEWIE_VOICE_ID,
+  RICK_VOICE_ID, MORTY_VOICE_ID,
+  WALTER_VOICE_ID, ELON_VOICE_ID,
+  'walter-white', 'elon-musk'
+]);
 const CASTS = [
   {name: 'Peter & Stewie', first: PETER_VOICE_ID, second: STEWIE_VOICE_ID},
   {name: 'Rick & Morty', first: RICK_VOICE_ID, second: MORTY_VOICE_ID},
+  {name: 'Walter & Elon', first: WALTER_VOICE_ID, second: ELON_VOICE_ID},
 ];
 
 function parseArguments(argumentsList) {
@@ -72,10 +81,14 @@ async function isCompletedAudioFile(filePath) {
 
 async function generateLine({line, filePath}) {
   const pythonScript = join(scriptDirectory, 'synthesize-line.py');
-  const pythonCmd = process.platform === 'win32' ? 'py' : 'python3';
-  const pythonArgs = process.platform === 'win32'
-    ? ['-3.14', pythonScript, '--text', line.text, '--voice', line.voiceId, '--output', filePath]
-    : [pythonScript, '--text', line.text, '--voice', line.voiceId, '--output', filePath];
+  const aiEnvPython = 'C:\\Users\\Ayush\\.gemini\\antigravity\\scratch\\content-master\\.ai_env\\Scripts\\python.exe';
+  const hasAiEnv = existsSync(aiEnvPython);
+  const pythonCmd = hasAiEnv ? aiEnvPython : (process.platform === 'win32' ? 'py' : 'python3');
+  const pythonArgs = hasAiEnv
+    ? [pythonScript, '--text', line.text, '--voice', line.voiceId, '--output', filePath]
+    : (process.platform === 'win32'
+      ? ['-3.14', pythonScript, '--text', line.text, '--voice', line.voiceId, '--output', filePath]
+      : [pythonScript, '--text', line.text, '--voice', line.voiceId, '--output', filePath]);
 
   return new Promise((resolvePromise, rejectPromise) => {
     const child = spawn(pythonCmd, pythonArgs, {stdio: 'inherit'});
@@ -121,7 +134,7 @@ await mkdir(audioDirectory, {recursive: true});
 for (const line of lines) {
   const file = `${String(line.index).padStart(3, '0')}.mp3`;
   const filePath = join(audioDirectory, file);
-  if (await isCompletedAudioFile(filePath)) {
+  if (options.force !== 'true' && await isCompletedAudioFile(filePath)) {
     console.log(`Keeping existing ${file}.`);
     continue;
   }

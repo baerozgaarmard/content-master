@@ -2,31 +2,31 @@
   {
     "index": 0,
     "voiceId": "e34b4e061b874623a08f41e5c4fecfb9",
-    "text": "Stewie, look! My coding assistant shut down again 'cause I hit my stupid API budget!"
+    "text": "Stewie, my coding assistant died 'cause I blew my API budget again!"
   },
   {
     "index": 1,
     "voiceId": "fdffd3722cd040fcb3f95eec5a7f29f3",
-    "text": "Oh stop your crying, Peter. Just plug OmniRoute into Cursor. It routes your code through sixty free AI models with automatic fallback."
+    "text": "Oh stop crying, Peter. Just connect OmniRoute to Cursor. It routes your code through sixty free AI models with automatic fallback."
   },
   {
     "index": 2,
     "voiceId": "e34b4e061b874623a08f41e5c4fecfb9",
-    "text": "Wait, free models? Like I can keep coding and not pay anything?!"
+    "text": "Wait, sixty free models?! So I never have to pay for API credits again?!"
   },
   {
     "index": 3,
     "voiceId": "fdffd3722cd040fcb3f95eec5a7f29f3",
-    "text": "Yes, you brilliant ape! If one provider goes down or throttles you, it instantly switches to another without skipping a beat."
+    "text": "Precisely. And if one goes down, it instantly switches without skipping a beat."
   },
   {
     "index": 4,
     "voiceId": "e34b4e061b874623a08f41e5c4fecfb9",
-    "text": "Holy crap, that's genius! Does it work on my machine right now?!"
+    "text": "Holy crap, that's genius! Where do I get it?!"
   },
   {
     "index": 5,
     "voiceId": "fdffd3722cd040fcb3f95eec5a7f29f3",
-    "text": "It has a desktop app, Peter. Search ChrisCompton slash omniroute on GitHub and stop whining."
+    "text": "Search ChrisCompton slash omniroute on GitHub. Follow for more such content!"
   }
 ]
