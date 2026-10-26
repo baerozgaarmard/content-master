@@ -18,5 +18,7 @@ assets/
 sample_*.mp3
 test*.mp3
 generate_hf_rvc_samples.py
+generate_peter_stewie_real.py
+
 
 

@@ -17,7 +17,12 @@ if os.path.exists(AI_ENV_PYTHON) and os.path.normpath(sys.executable).lower() !=
     for i, arg in enumerate(sys.argv):
         if arg == "--voice" and i + 1 < len(sys.argv):
             voice_req = sys.argv[i + 1].lower()
-            if voice_req in ["walter", "walter-white", "elon", "elon-musk"]:
+            if voice_req in [
+                "walter", "walter-white",
+                "elon", "elon-musk",
+                "peter", "peter-griffin", "e34b4e061b874623a08f41e5c4fecfb9",
+                "stewie", "stewie-griffin", "fdffd3722cd040fcb3f95eec5a7f29f3"
+            ]:
                 result = subprocess.run([AI_ENV_PYTHON, os.path.abspath(__file__)] + sys.argv[1:])
                 sys.exit(result.returncode)
 
@@ -67,21 +72,79 @@ CHARACTER_MAP = {
         "pitch": "+12Hz",
         "rate": "+10%"
     },
-    # Peter Griffin
+    # Peter Griffin (Seth MacFarlane - Family Guy)
     "e34b4e061b874623a08f41e5c4fecfb9": {
         "speaker": "Peter Griffin",
         "reference_wav": os.path.join(VOICES_DIR, "peter_reference.wav"),
+        "model_path": resolve_model_path(os.path.join("peter_griffin", "peter.pth")),
+        "index_path": resolve_model_path(os.path.join("peter_griffin", "peter.index")),
         "fallback_voice": "en-US-GuyNeural",
         "pitch": "-5Hz",
-        "rate": "-5%"
+        "rate": "-5%",
+        "f0up_key": 0,
+        "index_rate": 0.8,
+        "f0method": "pm"
     },
-    # Stewie Griffin
+    "peter": {
+        "speaker": "Peter Griffin",
+        "reference_wav": os.path.join(VOICES_DIR, "peter_reference.wav"),
+        "model_path": resolve_model_path(os.path.join("peter_griffin", "peter.pth")),
+        "index_path": resolve_model_path(os.path.join("peter_griffin", "peter.index")),
+        "fallback_voice": "en-US-GuyNeural",
+        "pitch": "-5Hz",
+        "rate": "-5%",
+        "f0up_key": 0,
+        "index_rate": 0.8,
+        "f0method": "pm"
+    },
+    "peter-griffin": {
+        "speaker": "Peter Griffin",
+        "reference_wav": os.path.join(VOICES_DIR, "peter_reference.wav"),
+        "model_path": resolve_model_path(os.path.join("peter_griffin", "peter.pth")),
+        "index_path": resolve_model_path(os.path.join("peter_griffin", "peter.index")),
+        "fallback_voice": "en-US-GuyNeural",
+        "pitch": "-5Hz",
+        "rate": "-5%",
+        "f0up_key": 0,
+        "index_rate": 0.8,
+        "f0method": "pm"
+    },
+    # Stewie Griffin (Seth MacFarlane - Family Guy)
     "fdffd3722cd040fcb3f95eec5a7f29f3": {
         "speaker": "Stewie Griffin",
         "reference_wav": os.path.join(VOICES_DIR, "stewie_reference.wav"),
+        "model_path": resolve_model_path(os.path.join("stewie_griffin", "Stewie.pth")),
+        "index_path": resolve_model_path(os.path.join("stewie_griffin", "added_IVF425_Flat_nprobe_1_Stewie_v2.index")),
         "fallback_voice": "en-GB-RyanNeural",
-        "pitch": "+10Hz",
-        "rate": "+12%"
+        "pitch": "+12Hz",
+        "rate": "+10%",
+        "f0up_key": 0,
+        "index_rate": 0.8,
+        "f0method": "pm"
+    },
+    "stewie": {
+        "speaker": "Stewie Griffin",
+        "reference_wav": os.path.join(VOICES_DIR, "stewie_reference.wav"),
+        "model_path": resolve_model_path(os.path.join("stewie_griffin", "Stewie.pth")),
+        "index_path": resolve_model_path(os.path.join("stewie_griffin", "added_IVF425_Flat_nprobe_1_Stewie_v2.index")),
+        "fallback_voice": "en-GB-RyanNeural",
+        "pitch": "+12Hz",
+        "rate": "+10%",
+        "f0up_key": 0,
+        "index_rate": 0.8,
+        "f0method": "pm"
+    },
+    "stewie-griffin": {
+        "speaker": "Stewie Griffin",
+        "reference_wav": os.path.join(VOICES_DIR, "stewie_reference.wav"),
+        "model_path": resolve_model_path(os.path.join("stewie_griffin", "Stewie.pth")),
+        "index_path": resolve_model_path(os.path.join("stewie_griffin", "added_IVF425_Flat_nprobe_1_Stewie_v2.index")),
+        "fallback_voice": "en-GB-RyanNeural",
+        "pitch": "+12Hz",
+        "rate": "+10%",
+        "f0up_key": 0,
+        "index_rate": 0.8,
+        "f0method": "pm"
     },
     # Walter White (Bryan Cranston - Heisenberg)
     "walter": {
