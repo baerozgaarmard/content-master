@@ -92,11 +92,12 @@ function escapeAss(value) {
   return value.replace(/\\/g, '\\\\').replace(/{/g, '\\{').replace(/}/g, '\\}');
 }
 
-function captionText(group) {
+function captionText(group, isPeter = true) {
   const stress = stressWord(group);
+  const stressColor = isPeter ? '{\\c&H00D7FF&}' : '{\\c&HFFFF00&}'; // Gold for Peter, Cyan for Stewie
   return group.map((word) => {
     const escaped = escapeAss(word.toUpperCase());
-    return word === stress ? `{\\c&H00FFD700&}${escaped}{\\c&HFFFFFF&}` : escaped;
+    return word === stress ? `${stressColor}${escaped}{\\c&HFFFFFF&}` : escaped;
   }).join(' ');
 }
 
@@ -200,11 +201,17 @@ const assLines = [
   '',
   '[V4+ Styles]',
   'Format: Name,Fontname,Fontsize,PrimaryColour,SecondaryColour,OutlineColour,BackColour,Bold,Italic,Underline,StrikeOut,ScaleX,ScaleY,Spacing,Angle,BorderStyle,Outline,Shadow,Alignment,MarginL,MarginR,MarginV,Encoding',
-  'Style: Caption,Poppins,82,&H00FFFFFF,&H00FFFFFF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,10,4,5,80,80,0,1',
+  'Style: PeterCaption,Arial Black,96,&H00FFFFFF,&H00FFFFFF,&H00000000,&HA0000000,-1,0,0,0,100,100,0,0,1,12,5,5,60,60,0,1',
+  'Style: StewieCaption,Arial Black,96,&H00FFFFFF,&H00FFFFFF,&H00000000,&HA0000000,-1,0,0,0,100,100,0,0,1,12,5,5,60,60,0,1',
   '',
   '[Events]',
   'Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text',
-  ...chunks.map((chunk) => `Dialogue: 0,${toTimestamp(chunk.start)},${toTimestamp(chunk.end)},Caption,,0,0,0,,{\\an5\\pos(540,960)\\fad(70,80)\\fscx88\\fscy88\\t(0,110,\\fscx100\\fscy100)}${captionText(chunk.words)}`),
+  ...chunks.map((chunk) => {
+    const isPeter = chunk.lineIndex % 2 === 0;
+    const styleName = isPeter ? 'PeterCaption' : 'StewieCaption';
+    const speakerTag = isPeter ? '{\\c&H00D7FF&}PETER: {\\c&HFFFFFF&}' : '{\\c&HFFFF00&}STEWIE: {\\c&HFFFFFF&}';
+    return `Dialogue: 0,${toTimestamp(chunk.start)},${toTimestamp(chunk.end)},${styleName},,0,0,0,,{\\an5\\pos(540,960)\\fad(50,50)\\fscx90\\fscy90\\t(0,90,\\fscx100\\fscy100)}${speakerTag}${captionText(chunk.words, isPeter)}`;
+  }),
 ];
 await writeFile(assFile, `${assLines.join('\n')}\n`, 'utf8');
 await writeFile(chunkFile, `${JSON.stringify(chunks, null, 2)}\n`, 'utf8');
