@@ -43,6 +43,44 @@ CHARACTER_MAP = {
         "fallback_voice": "en-GB-RyanNeural",
         "pitch": "+10Hz",
         "rate": "+12%"
+    },
+    # Walter White (Bryan Cranston - Heisenberg)
+    "walter": {
+        "speaker": "Walter White",
+        "reference_wav": os.path.join(VOICES_DIR, "walter_reference.wav"),
+        "model_path": os.path.join(os.path.dirname(SCRIPT_DIR), "models", "walter_white", "walt.pth"),
+        "index_path": os.path.join(os.path.dirname(SCRIPT_DIR), "models", "walter_white", "added_IVF249_Flat_nprobe_1_walt_v2.index"),
+        "fallback_voice": "en-US-BrianNeural",
+        "pitch": "-10Hz",
+        "rate": "-8%"
+    },
+    "walter-white": {
+        "speaker": "Walter White",
+        "reference_wav": os.path.join(VOICES_DIR, "walter_reference.wav"),
+        "model_path": os.path.join(os.path.dirname(SCRIPT_DIR), "models", "walter_white", "walt.pth"),
+        "index_path": os.path.join(os.path.dirname(SCRIPT_DIR), "models", "walter_white", "added_IVF249_Flat_nprobe_1_walt_v2.index"),
+        "fallback_voice": "en-US-BrianNeural",
+        "pitch": "-10Hz",
+        "rate": "-8%"
+    },
+    # Elon Musk
+    "elon": {
+        "speaker": "Elon Musk",
+        "reference_wav": os.path.join(VOICES_DIR, "elon_reference.wav"),
+        "model_path": os.path.join(os.path.dirname(SCRIPT_DIR), "models", "elon_musk", "Elonmusk (1).pth"),
+        "index_path": os.path.join(os.path.dirname(SCRIPT_DIR), "models", "elon_musk", "added_IVF819_Flat_nprobe_1_Elonmusk_v2.index"),
+        "fallback_voice": "en-US-EricNeural",
+        "pitch": "+2Hz",
+        "rate": "-6%"
+    },
+    "elon-musk": {
+        "speaker": "Elon Musk",
+        "reference_wav": os.path.join(VOICES_DIR, "elon_reference.wav"),
+        "model_path": os.path.join(os.path.dirname(SCRIPT_DIR), "models", "elon_musk", "Elonmusk (1).pth"),
+        "index_path": os.path.join(os.path.dirname(SCRIPT_DIR), "models", "elon_musk", "added_IVF819_Flat_nprobe_1_Elonmusk_v2.index"),
+        "fallback_voice": "en-US-EricNeural",
+        "pitch": "+2Hz",
+        "rate": "-6%"
     }
 }
 

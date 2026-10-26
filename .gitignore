@@ -9,5 +9,6 @@ video-templates/
 .env
 .env.local
 .agent/
+.codebase-memory/
 assets/
 
