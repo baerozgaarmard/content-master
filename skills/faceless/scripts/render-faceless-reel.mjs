@@ -152,7 +152,14 @@ const totalDuration = await getDuration(executable, fullAudio);
 // 1. Build character timeline and caption chunks
 let currentTime = 0;
 const timeline = [];
-const chunks = [];
+let chunks = [];
+
+try {
+  chunks = JSON.parse(await readFile(chunkFile, 'utf8'));
+  console.log(`Loaded ${chunks.length} acoustically-aligned chunks from ${chunkFile}`);
+} catch {
+  chunks = [];
+}
 
 for (const [position, line] of [...script].sort((a, b) => a.index - b.index).entries()) {
   const character = CHARACTER_BY_VOICE.get(line.voiceId);
@@ -166,20 +173,22 @@ for (const [position, line] of [...script].sort((a, b) => a.index - b.index).ent
   const lineEnd = timestamp(Math.min(currentTime + duration, totalDuration));
   timeline.push({...character, index: line.index, start, end: lineEnd});
 
-  const groups = groupWords(wordsFrom(line.text));
-  const totalWeight = groups.reduce((total, group) => total + group.join('').length, 0);
-  let groupStart = currentTime;
-  for (const group of groups) {
-    const weight = group.join('').length / totalWeight;
-    const groupEnd = groupStart + duration * weight;
-    chunks.push({
-      lineIndex: line.index,
-      start: Number(groupStart.toFixed(3)),
-      end: Number(groupEnd.toFixed(3)),
-      words: group.map((word) => word.toUpperCase()),
-      stress: stressWord(group).toUpperCase(),
-    });
-    groupStart = groupEnd;
+  if (chunks.length === 0) {
+    const groups = groupWords(wordsFrom(line.text));
+    const totalWeight = groups.reduce((total, group) => total + group.join('').length, 0);
+    let groupStart = currentTime;
+    for (const group of groups) {
+      const weight = group.join('').length / totalWeight;
+      const groupEnd = groupStart + duration * weight;
+      chunks.push({
+        lineIndex: line.index,
+        start: Number(groupStart.toFixed(3)),
+        end: Number(groupEnd.toFixed(3)),
+        words: group.map((word) => word.toUpperCase()),
+        stress: stressWord(group).toUpperCase(),
+      });
+      groupStart = groupEnd;
+    }
   }
 
   currentTime += duration;

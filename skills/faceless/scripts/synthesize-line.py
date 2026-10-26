@@ -78,24 +78,24 @@ CHARACTER_MAP = {
         "reference_wav": os.path.join(VOICES_DIR, "peter_reference.wav"),
         "model_path": resolve_model_path(os.path.join("peter_griffin", "peter.pth")),
         "index_path": resolve_model_path(os.path.join("peter_griffin", "peter.index")),
-        "fallback_voice": "en-US-GuyNeural",
-        "pitch": "-5Hz",
-        "rate": "-5%",
+        "fallback_voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+3%",
         "f0up_key": 0,
-        "index_rate": 0.8,
-        "f0method": "pm"
+        "index_rate": 0.9,
+        "f0method": "harvest"
     },
     "peter": {
         "speaker": "Peter Griffin",
         "reference_wav": os.path.join(VOICES_DIR, "peter_reference.wav"),
         "model_path": resolve_model_path(os.path.join("peter_griffin", "peter.pth")),
         "index_path": resolve_model_path(os.path.join("peter_griffin", "peter.index")),
-        "fallback_voice": "en-US-GuyNeural",
-        "pitch": "-5Hz",
-        "rate": "-5%",
+        "fallback_voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+3%",
         "f0up_key": 0,
-        "index_rate": 0.8,
-        "f0method": "pm"
+        "index_rate": 0.9,
+        "f0method": "harvest"
     },
     "peter-griffin": {
         "speaker": "Peter Griffin",
