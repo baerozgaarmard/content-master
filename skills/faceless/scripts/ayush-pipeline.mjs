@@ -1,35 +1,40 @@
 #!/usr/bin/env node
 /**
- * Ayush Pipeline - End-to-End Automated Viral Reel Production System
+ * Ayush Pipeline - Autonomous Viral Reel Production Engine (v2.0)
  * 
- * Pipeline Features:
- *  1. Voice Synthesis: Hugging Face Delik RVC v2 (81.57MB feature index) with PyWorld Harvest pitch engine for deep, natural, authentic Peter Griffin voice + Stewie Griffin RVC v2.
- *  2. Sample-Accurate Audio Stitching: 44.1 kHz mono audio with FFmpeg filter_complex concat.
- *  3. Acoustic Speech Alignment: RMS energy burst detection (energies > 0.015) for zero-drift, pause-aware subtitles without speaker name prefixes.
- *  4. High-Impact Video Compositing: 1080x1920 60 FPS HD Minecraft parkour, 96px bold typography with 12px outline, and genuine GitHub screenshot overlays.
- *  5. Viral Cover & SEO Packaging: 1080x1920 high-CTR cover generation + viral title and 4 hyper-targeted hashtags.
+ * Pipeline Standards & Upgrades:
+ *  1. Natural Human Conversational Pace: Peter Griffin Delik RVC v2 (PyWorld Harvest) & Stewie Griffin tuned to natural human speaking pace (rate="+0%").
+ *  2. Microsecond Subtitle Synchronization: Direct word boundary streaming (boundary='WordBoundary') outputting exact onset/offset word timestamps into .words.json for zero-drift, pause-aware captions.
+ *  3. Mandatory Closing Call-to-Action: Guarantees closing dialogue line and cards end with "Follow for more such content!".
+ *  4. Zero Hidden Info Standard: Automatically links and renders genuine, raw browser screenshots of GitHub (owner, star count, commits, code, and UI).
+ *  5. Clean Anti-AI-Slop Thumbnail: 1080x1920 viral cover with real repository centerpiece, clean desktop framing, bold typography, and zero synthetic pill boxes or fake badges.
+ *  6. Turnkey Multi-Platform SEO Package: Viral title, hook, description, and 4 high-reach hashtags.
  */
 
 import {spawn} from 'node:child_process';
 import {existsSync} from 'node:fs';
-import {access, mkdir, readFile, writeFile, stat} from 'node:fs/promises';
+import {access, mkdir, readFile, writeFile} from 'node:fs/promises';
 import {dirname, join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Root repository directory
-const ROOT_DIR = resolve(__dirname, '..');
+// Root repository directory: resolves to content-master
+const ROOT_DIR = resolve(__dirname, '..', '..', '..');
 const AI_ENV_PYTHON = join(ROOT_DIR, '.ai_env', 'Scripts', 'python.exe');
 const PYTHON_CMD = existsSync(AI_ENV_PYTHON) ? AI_ENV_PYTHON : (process.platform === 'win32' ? 'py' : 'python3');
 
 function parseArguments(args) {
   const options = {
-    topic: 'prompts-chat',
+    topic: 'omniroute',
     output: join(ROOT_DIR, 'faceless-output'),
     template: join(ROOT_DIR, 'packages', 'faceless', 'skills', 'faceless', 'video-templates', 'minecraft_hd_new.mp4'),
-    overlays: join(ROOT_DIR, 'assets', 'overlays', 'prompts_chat_overlays.json'),
+    overlays: null,
+    screenshot: null,
+    title1: null,
+    title2: null,
+    force: false,
     skipAudio: false,
     skipAlign: false,
     skipVideo: false,
@@ -42,7 +47,11 @@ function parseArguments(args) {
     else if (arg === '--script' || arg === '--dialogue') options.dialogue = args[++i];
     else if (arg === '--template') options.template = args[++i];
     else if (arg === '--overlays') options.overlays = args[++i];
+    else if (arg === '--screenshot') options.screenshot = args[++i];
+    else if (arg === '--title1') options.title1 = args[++i];
+    else if (arg === '--title2') options.title2 = args[++i];
     else if (arg === '--output') options.output = resolve(args[++i]);
+    else if (arg === '--force') options.force = true;
     else if (arg === '--skip-audio') options.skipAudio = true;
     else if (arg === '--skip-align') options.skipAlign = true;
     else if (arg === '--skip-video') options.skipVideo = true;
@@ -70,13 +79,15 @@ function runCommand(command, args, options = {}) {
 async function main() {
   const options = parseArguments(process.argv.slice(2));
   console.log('====================================================');
-  console.log('              AYUSH PIPELINE v1.0.0                 ');
+  console.log('              AYUSH PIPELINE v2.0.0                 ');
   console.log('  Autonomous Viral Faceless Reel Production Engine  ');
+  console.log('  (Natural Speech • Exact Word Sync • Anti-Slop)   ');
   console.log('====================================================');
   console.log(`Topic: ${options.topic}`);
+  console.log(`Workspace Root: ${ROOT_DIR}`);
   console.log(`Output Directory: ${options.output}`);
 
-  // Resolve dialogue script
+  // 1. Resolve dialogue script
   let dialoguePath = options.dialogue;
   if (!dialoguePath) {
     const candidates = [
@@ -98,6 +109,21 @@ async function main() {
   }
   console.log(`Dialogue Script: ${dialoguePath}`);
 
+  // 2. Validate & Enforce Mandatory Closing CTA Standard
+  try {
+    const scriptContent = JSON.parse(await readFile(dialoguePath, 'utf8'));
+    if (Array.isArray(scriptContent) && scriptContent.length > 0) {
+      const lastLine = scriptContent[scriptContent.length - 1];
+      if (lastLine && !lastLine.text.toLowerCase().includes('follow for more')) {
+        console.log('[Ayush Pipeline Standard] Appending mandatory closing CTA: "Follow for more such content!"');
+        lastLine.text = lastLine.text.replace(/[.!?,]*$/, '') + '. Follow for more such content!';
+        await writeFile(dialoguePath, JSON.stringify(scriptContent, null, 2), 'utf8');
+      }
+    }
+  } catch (err) {
+    console.warn(`[Ayush Pipeline Warning] Script validation notice: ${err.message}`);
+  }
+
   const audioDir = join(options.output, 'audio', options.topic);
   const videoDir = join(options.output, 'video', options.topic);
   const thumbsDir = join(options.output, 'thumbnails', options.topic);
@@ -110,37 +136,57 @@ async function main() {
   await mkdir(videoDir, {recursive: true});
   await mkdir(thumbsDir, {recursive: true});
 
-  // STEP 1: VOICE SYNTHESIS (Natural Delik RVC v2 + PyWorld Harvest)
+  // STEP 1: VOICE SYNTHESIS (Natural Delik RVC v2 + PyWorld Harvest + Word Boundaries)
   if (!options.skipAudio) {
-    console.log('\n--- [Step 1/5] Synthesizing Voice Lines (Delik RVC v2 + PyWorld Harvest) ---');
+    console.log('\n--- [Step 1/5] Synthesizing Voice Lines (Delik RVC v2 + Harvest @ Natural Pace rate=+0%) ---');
     const generateAudioScript = join(ROOT_DIR, 'skills', 'faceless', 'scripts', 'generate-audio.mjs');
-    await runCommand(process.execPath, [
+    const audioArgs = [
       generateAudioScript,
       '--script', dialoguePath,
       '--topic', options.topic,
       '--output', options.output,
-    ]);
+    ];
+    if (options.force) {
+      audioArgs.push('--force', 'true');
+    }
+    await runCommand(process.execPath, audioArgs);
   } else {
     console.log('\n--- [Step 1/5] Audio synthesis skipped (--skip-audio) ---');
   }
 
-  // STEP 2: ACOUSTIC DIALOGUE ALIGNMENT (RMS Energy Speech Bursts)
+  // STEP 2: MICROSECOND SUBTITLE ALIGNMENT (WordBoundary Timestamps)
   if (!options.skipAlign) {
-    console.log('\n--- [Step 2/5] Running Acoustic Subtitle Alignment (Zero Drift / Pause-Aware) ---');
+    console.log('\n--- [Step 2/5] Running Subtitle Alignment (True WordBoundary Timestamps) ---');
     const alignScript = join(ROOT_DIR, 'skills', 'faceless', 'scripts', 'align-dialogue.py');
     await runCommand(PYTHON_CMD, [
       alignScript,
+      '--root', ROOT_DIR,
       '--dialogue', dialoguePath,
-      '--audio', fullAudioPath,
+      '--audio', audioDir,
+      '--topic', options.topic,
       '--output', chunksPath,
     ]);
   } else {
     console.log('\n--- [Step 2/5] Acoustic alignment skipped (--skip-align) ---');
   }
 
-  // STEP 3: HIGH-IMPACT 60 FPS HD VIDEO RENDERING
+  // STEP 3: HIGH-IMPACT 60 FPS HD VIDEO RENDERING WITH REAL OVERLAYS
   if (!options.skipVideo) {
-    console.log('\n--- [Step 3/5] Compositing 60 FPS HD Video, Captions & Genuine Screenshots ---');
+    console.log('\n--- [Step 3/5] Compositing 60 FPS HD Video, Captions & Genuine GitHub Screenshots ---');
+    let overlaysFile = options.overlays;
+    if (!overlaysFile) {
+      const candidateOverlays = [
+        join(ROOT_DIR, 'assets', 'overlays', `${options.topic}_overlays.json`),
+        join(ROOT_DIR, 'assets', 'overlays', options.topic, 'overlays.json'),
+      ];
+      for (const cand of candidateOverlays) {
+        if (existsSync(cand)) {
+          overlaysFile = cand;
+          break;
+        }
+      }
+    }
+
     const renderScript = join(ROOT_DIR, 'skills', 'faceless', 'scripts', 'render-faceless-reel.mjs');
     const renderArgs = [
       renderScript,
@@ -148,58 +194,85 @@ async function main() {
       '--output', options.output,
       '--template', options.template,
     ];
-    if (options.overlays && existsSync(options.overlays)) {
-      renderArgs.push('--overlays', options.overlays);
+    if (overlaysFile && existsSync(overlaysFile)) {
+      renderArgs.push('--overlays', overlaysFile);
+      console.log(`Using Overlay Sequence: ${overlaysFile}`);
     }
     await runCommand(process.execPath, renderArgs);
   } else {
     console.log('\n--- [Step 3/5] Video rendering skipped (--skip-video) ---');
   }
 
-  // STEP 4: VIRAL 1080x1920 COVER GENERATION
+  // STEP 4: CLEAN ANTI-AI-SLOP 1080x1920 COVER GENERATION
   if (!options.skipCover) {
-    console.log('\n--- [Step 4/5] Generating High-CTR Viral 1080x1920 Cover Image ---');
-    const coverScript = [
-      join(ROOT_DIR, 'scripts', 'generate-cover.py'),
-      join(ROOT_DIR, 'skills', 'faceless', 'scripts', 'generate-cover.py'),
-      join(ROOT_DIR, 'assets', 'thumbnails', 'generate_cover.py'),
-    ].find((p) => existsSync(p)) || join(ROOT_DIR, 'scripts', 'generate-cover.py');
+    console.log('\n--- [Step 4/5] Generating Clean Real-Repo Viral 1080x1920 Cover Image ---');
+    const coverScript = join(ROOT_DIR, 'skills', 'faceless', 'scripts', 'generate-cover.py');
     const coverArgs = [
       coverScript,
       '--topic', options.topic,
       '--output', coverPath,
     ];
-    if (options.overlays && existsSync(options.overlays)) {
-      try {
-        const overlayData = JSON.parse(await readFile(options.overlays, 'utf8'));
-        const firstOverlay = Array.isArray(overlayData) ? overlayData[0] : (overlayData.overlays && overlayData.overlays[0]);
-        if (firstOverlay && (firstOverlay.file || firstOverlay.image)) {
-          coverArgs.push('--screenshot', firstOverlay.file || firstOverlay.image);
+
+    // Auto-detect genuine screenshot centerpiece
+    let shotPath = options.screenshot;
+    if (!shotPath) {
+      const candidates = [
+        join(ROOT_DIR, 'assets', 'overlays', `${options.topic}_real`, 'real_repo_main.png'),
+        join(ROOT_DIR, 'assets', 'overlays', options.topic, 'real_card_01_repo_main.png'),
+        join(ROOT_DIR, 'assets', 'overlays', `${options.topic}_real`, 'real_repo_files.png'),
+      ];
+      for (const cand of candidates) {
+        if (existsSync(cand)) {
+          shotPath = cand;
+          break;
         }
-      } catch {
-        // use default screenshot
       }
     }
+    if (shotPath && existsSync(shotPath)) {
+      coverArgs.push('--screenshot', shotPath);
+      console.log(`Cover Real Screenshot Centerpiece: ${shotPath}`);
+    }
+    if (options.title1) coverArgs.push('--title1', options.title1);
+    if (options.title2) coverArgs.push('--title2', options.title2);
+
     await runCommand(PYTHON_CMD, coverArgs);
   } else {
     console.log('\n--- [Step 4/5] Cover generation skipped (--skip-cover) ---');
   }
 
   // STEP 5: VIRAL SEO PACKAGE
-  console.log('\n--- [Step 5/5] Generating SEO Title & Hashtag Package ---');
-  const seoData = {
-    topic: options.topic,
-    title: 'Stop Paying for ChatGPT Prompts! (174k Star Secret) 🤫',
-    hashtags: ['#chatgpt', '#chatgptprompts', '#ai', '#github'],
-    description: 'Stop paying for AI cheat sheets! Peter Griffin and Stewie break down f/prompts.chat, the open-source GitHub repository with 174,000+ stars that gives you every elite ChatGPT prompt for free.',
-    files: {
-      video: finalReelPath,
-      audio: fullAudioPath,
-      cover: coverPath,
-      subtitles: chunksPath,
-    },
-    generatedAt: new Date().toISOString(),
+  console.log('\n--- [Step 5/5] Generating Multi-Platform SEO Package ---');
+  const existingSeoPath = join(options.output, 'seo', `${options.topic}-seo.json`);
+  let seoData = null;
+  if (existsSync(existingSeoPath)) {
+    try {
+      seoData = JSON.parse(await readFile(existingSeoPath, 'utf8'));
+    } catch {}
+  }
+
+  if (!seoData) {
+    const formattedTopic = options.topic.split('-').map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+    seoData = {
+      title: `The Open-Source ${formattedTopic} Secret Developers Need to Know! 🚀`,
+      seo_hook: `Stop paying high prices for developer tools! Discover the open-source repository ${formattedTopic}.`,
+      caption: `Discover ${formattedTopic} on GitHub! Search the repository, star the project, and unlock top-tier developer performance without blowing your budget. Follow for more such content! 🔥`,
+      hashtags: [
+        `#${options.topic.replace(/[^a-zA-Z0-9]/g, '')}`,
+        '#OpenSource',
+        '#DeveloperTools',
+        '#CodingHacks'
+      ],
+      call_to_action: 'Follow for more such content and check out the repository on GitHub!',
+    };
+  }
+
+  seoData.files = {
+    video: finalReelPath,
+    audio: fullAudioPath,
+    cover: coverPath,
+    subtitles: chunksPath,
   };
+  seoData.updatedAt = new Date().toISOString();
 
   const seoPackagePath = join(options.output, 'seo', `${options.topic}-seo.json`);
   await mkdir(dirname(seoPackagePath), {recursive: true});
